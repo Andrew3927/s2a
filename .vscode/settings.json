@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "*.txt": "c"
-    }
+        "*.txt": "c",
+        "stdio_lim.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

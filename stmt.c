@@ -9,7 +9,7 @@
 #include "emit.h"
 #include "func.h"
 
-#define	IS_PREFIX_OF_DECL(tk)	(tk == TK_INT)
+#define	IS_PREFIX_OF_DECL(token)	(token == TK_INT)
 
 #ifdef _WIN32
 #define	snprintf	_snprintf

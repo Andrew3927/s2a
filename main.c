@@ -17,6 +17,11 @@ static char NextCharFromMem(void){
 	}
 }
 
+/**
+ * @brief 读取标准IO输入的下一个字符
+ * 
+ * @return char 返回下一个IO流里面的字符
+ */
 static char NextCharFromStdin(void){
 	int ch = fgetc(stdin);
 	if(ch == EOF){
@@ -124,13 +129,13 @@ SQAload:
 }
 
 int main(){
-	AstStmtNodePtr decls = NULL;
-	AstFuncDefNodePtr funcs = NULL;
+	AstStmtNodePtr declarations = NULL;
+	AstFuncDefNodePtr functions = NULL;
 	
 	InitLexer(NextCharFromStdin);
 	NEXT_TOKEN;
-	decls = Declarations();	
-	funcs = FunctionDefinitions();
+	declarations = Declarations();	
+	functions = FunctionDefinitions();
 	Expect(TK_EOF);
 
 
@@ -143,14 +148,14 @@ int main(){
 	EmitLabel(".data");
 	EmitAssembly("%s:	.string	\"%%d\"",INPUT_FORMAT_STR_NAME);
 	EmitAssembly("%s:	.string	\"%%d\\012\"",OUTPUT_FORMAT_STR_NAME);
-	EmitStatementNode(decls);
+	EmitStatementNode(declarations);
 	/*********************************	
 	.text
 	.globl	main
 	main:
 	**********************************/
 	attach_our_library();
-	EmitFuncDefNode(funcs);
+	EmitFuncDefNode(functions);
 	// FIXME: TBD, free the heap memory.
 	// To be simple, we only use malloc(), but never free() in this simple compiler.
 	// Let the OS do it for us :)
