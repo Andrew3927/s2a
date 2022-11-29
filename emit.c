@@ -74,6 +74,12 @@ void EmitAssembly(const char * fmt, ...){
 }
 #endif
 
+/**
+ * @brief 生成编译语言中的（要跳转到的）label
+ * 
+ * @param fmt 
+ * @param ... 
+ */
 void EmitLabel(const char * fmt, ...){
 	va_list ap;
 	va_start(ap, fmt);

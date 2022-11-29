@@ -320,6 +320,12 @@ void   EmitStatementNode(AstStmtNodePtr stmt){
 			//EmitAssembly(???, ???);
 			//EmitStatementNode(???);
 			//EmitLabel(???, ???);
+			
+			EmitArithmeticNode(stmt->expr);
+			EmitAssembly("cmpl $0, %s", GetAccessName(stmt->expr));
+			EmitAssembly("je %s", stmt->kids[0]->value.name);
+			EmitStatementNode(stmt->thenStmt);
+			EmitLabel("%s:", stmt->kids[0]->value.name);
 		}
 		break;
 	case TK_WHILE:  // while(expr) ...
@@ -334,6 +340,14 @@ void   EmitStatementNode(AstStmtNodePtr stmt){
 		//EmitStatementNode(???);
 		//EmitAssembly(???, stmt->kids[0]->value.name);
 		//EmitLabel(???, ???);
+
+		EmitLabel("%s:", stmt->kids[0]->value.name);
+		EmitArithmeticNode(stmt->expr);
+		EmitAssembly("cmpl $0, %s", GetAccessName(stmt->expr));
+		EmitAssembly("je %s", stmt->kids[1]->value.name);
+		EmitStatementNode(stmt->thenStmt);
+		EmitAssembly("jmp %s", stmt->kids[0]->value.name);
+		EmitLabel("%s:", stmt->kids[1]->value.name);
 
 		break;
 	case TK_COMPOUND:

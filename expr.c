@@ -282,6 +282,11 @@ char  *  GetAccessName(AstNodePtr pNode){
 	}
 }
 
+/**
+ * @brief 翻译expr，结果保留在t
+ * 
+ * @param pNode 
+ */
 void EmitArithmeticNode(AstNodePtr pNode){ // function call is also handled here
 	if(pNode && pNode->op == TK_CALL){ // Lab: function call
 		// int cnt = 0;
@@ -303,6 +308,26 @@ void EmitArithmeticNode(AstNodePtr pNode){ // function call is also handled here
 		// }
 		// // move the return address to a temporary variable
 		// EmitAssembly(???,GetAccessName(pNode));
+
+		int cnt = 0;
+		// evaluate argugments from left to right	
+		while (cnt < pNode->arg_cnt){
+			EmitArithmeticNode(pNode->args[cnt]);			
+			cnt++;
+		}
+		// push arguments from right to left
+		cnt = pNode->arg_cnt - 1;		
+		while (cnt >= 0){
+			EmitAssembly("pushl %s",GetAccessName(pNode->args[cnt]));
+			cnt--;
+		}
+		// call the function 
+		EmitAssembly("call %s", pNode->value.name);
+		if(pNode->arg_cnt > 0) { // adjust the stack pointer esp
+			EmitAssembly("addl $%d, %%esp", CPU_WORD_SIZE_IN_BYTES * pNode->arg_cnt);
+		}
+		// move the return address to a temporary variable
+		EmitAssembly("movl %%eax, %s",GetAccessName(pNode));
 	}
 	else if(pNode && IsArithmeticNode(pNode)){
 		EmitArithmeticNode(pNode->kids[0]);
