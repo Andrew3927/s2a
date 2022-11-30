@@ -14,6 +14,7 @@ static char defaultNextChar(void);
 static char curChar = ' ';
 static NEXT_CHAR_FUNC NextChar = defaultNextChar;
 static KeywordInfo keywords[] = {
+	// {kind, name}
 	{TK_INT,"int"},
 	{TK_IF,"if"},
 	{TK_ELSE,"else"},
@@ -30,15 +31,16 @@ static char * tokenNames[] = {
 Token curToken;
 
 /**
- * @brief 将词法单元值的名字与关键词比对，返回词法单元的类型。
+ * @brief 如果当前词法单元的名字是(int, if, else, while, input, output, return)其中
+ * 	任意一种，那就返回对应的 TK_<类型>。否则就直接返回变量名。如year，month等。
  * 
  * @param id token.value.name
  * @return TokenKind 
  */
-static TokenKind GetKeywordKind(char * id){
+static TokenKind GetKeywordKind(char * tokenName){
 	int i = 0; 
 	for(i = 0; i < sizeof(keywords)/sizeof(keywords[0]); i++){
-		if(strcmp(id,keywords[i].name) == 0){
+		if(strcmp(tokenName,keywords[i].name) == 0){
 			return keywords[i].kind;
 		}
 	}
@@ -71,7 +73,13 @@ const char * GetTokenName(TokenKind tk){
 }
 
 /**
- * @brief 解析（读取整截）当前的字符，将当前字符对应的词法单元中的变量设置好后返回。
+ * @brief 这个curChar类型进行判断，是keywork (int, double, ..., do, while ...)
+ * 	还是数字
+ * 	还是 + , -, ; ), (, ...
+ * 	根据类型进行词法分析（将整个词条读入）。
+ * 
+ * 	NextChar()对应在main.c中的 
+ * 	NextCharFromStdin：每次读入一个被翻译代码中的字符。
  * 
  * @return Token 返回词法单元
  */
@@ -95,7 +103,6 @@ TryAgain:
 			curChar = NextChar();
 			len++;
 		}while(isalnum(curChar) && len < MAX_ID_LEN);
-		// 找到 当前 词法单元Token的 具体类型，然后 设置给当前的词法单元。
 		token.kind = GetKeywordKind(token.value.name);
 	}else if(isdigit(curChar)){//number
 		// 不断通过Nexthar()从左到右读如数字，直到
@@ -129,7 +136,7 @@ TryAgain:
 /**
  * @brief 初始化词法分析器
  * 
- * @param next 被翻译代码的一个字符。
+ * @param next 
  */
 void InitLexer(NEXT_CHAR_FUNC next){
 	if(next){

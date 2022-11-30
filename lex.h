@@ -30,7 +30,7 @@ typedef union
 
 /**
  * @brief 当前词法单元当中的类型。具体见tokens.txt。
- * 
+ *
  */
 typedef enum
 {
@@ -41,10 +41,10 @@ typedef enum
 
 /**
  * @brief Token是词法单元
- * 
+ *
  * @param kind (TokenKind)：词法单元的类型。见tokens.txt
  * @param value (Value)：词法单元的值。底下有名字name以及numVal。
- * 
+ *
  */
 typedef struct
 {
@@ -63,9 +63,9 @@ typedef char (*NEXT_CHAR_FUNC)(void);
 extern Token curToken;
 
 /**
- * @brief 找到字符对应的具体的词法单元，然后设置给当前的词法单元。
- * 	这里不需要do while(0)这种写法
- * 
+ * @brief 读入被翻译代码一截（一个词法单元），
+ * 	判断词法单元类型之后，将此类型根新给lex.h:中的curToken
+ *
  */
 #define NEXT_TOKEN curToken = GetToken();
 

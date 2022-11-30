@@ -92,11 +92,13 @@ int main()
 	AstStmtNodePtr declarations = NULL;
 	AstFuncDefNodePtr functions = NULL;
 
-	// NextharFromStdin 读取放在标准输入里面的被翻译代码的一个字符，然后
+	// NextharFromStdin: 读取放在标准输入里面的被翻译代码的一个字符，然后
 	// 传给 Initexer：将lex.c的NextChar设置位当前字符。
 	InitLexer(NextCharFromStdin);
-	
+
+	// 读入并且分以一个词法单元，设置该词法单元的类型。设置给lex.h: curToken。
 	NEXT_TOKEN;
+	
 	declarations = Declarations();
 	functions = FunctionDefinitions();
 	Expect(TK_EOF);

@@ -1,7 +1,7 @@
 #Auto-Genereated by SE352
 .data
-	.input_fmtstr:	.string	"%d"			# (main.c, 104)
-	.output_fmtstr:	.string	"%d\012"			# (main.c, 105)
+	.input_fmtstr:	.string	"%d"			# (main.c, 107)
+	.output_fmtstr:	.string	"%d\012"			# (main.c, 108)
 	.comm	year,4			# (decl.c, 183)
 	.comm	month,4			# (decl.c, 183)
 	.comm	day,4			# (decl.c, 183)
