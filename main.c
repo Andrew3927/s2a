@@ -6,34 +6,47 @@
 #include "emit.h"
 #include "func.h"
 
-static const char * srcCode = "{int (*f(int,int,int))[4];}";
-static char NextCharFromMem(void){
+static const char *srcCode = "{int (*f(int,int,int))[4];}";
+static char NextCharFromMem(void)
+{
 	int ch = *srcCode;
 	srcCode++;
-	if(ch == 0){
+	if (ch == 0)
+	{
 		return (char)EOF_CH;
-	}else{
+	}
+	else
+	{
 		return (char)ch;
 	}
 }
 
 /**
  * @brief 读取标准IO输入的下一个字符
- * 
+ *
  * @return char 返回下一个IO流里面的字符
  */
-static char NextCharFromStdin(void){
+static char NextCharFromStdin(void)
+{
 	int ch = fgetc(stdin);
-	if(ch == EOF){
+	if (ch == EOF)
+	{
 		return (char)EOF_CH;
-	}else{
+	}
+	else
+	{
 		return (char)ch;
 	}
 }
 
-
-
-static void output_library_func(char *setCmd, char *funcName){
+/**
+ * @brief 调用来生成客制化定义库函数对应的汇编语言。由attach_our_library(main.c)调用,生成汇编SQAless, SQAlarger, SQAequal。
+ *
+ * @param setCmd 汇编对应执行我们客制化库函数的汇编指令。例如 setl
+ * @param funcName 例如 call SQAless，funcName是SQAless
+ */
+static void output_library_func(char *setCmd, char *funcName)
+{
 	EmitLabel("\n.text");
 	EmitLabel(".globl  %s", funcName);
 	EmitLabel("%s:", funcName);
@@ -44,60 +57,17 @@ static void output_library_func(char *setCmd, char *funcName){
 	EmitAssembly("ret");
 }
 
-/* 
-	int less(int a, int b);
-	int larger(int a, int b);
-	int equal(int a, int b);
-*/
-static void attach_our_library(void){
-	/*
-.text
-.globl  SQAless
-SQAless:
-        movl    8(%esp), %eax
-        cmpl    %eax, 4(%esp)
-        setl    %al
-        movzbl  %al, %eax
-        ret
-
-
-.text
-.globl  SQAlarger
-SQAlarger:
-        movl    8(%esp), %eax
-        cmpl    %eax, 4(%esp)
-        setg    %al
-        movzbl  %al, %eax
-        ret
-
-.text
-.globl  SQAequal
-SQAequal:
-        movl    8(%esp), %eax
-        cmpl    %eax, 4(%esp)
-        sete    %al
-        movzbl  %al, %eax
-        ret
-
-	*/
+/**
+ * @brief 生成客制化定义库函数对应的汇编码。调用函数生成SQAless, SQAlarger, SQAequal。并且额外实现SQAstore, SQAload汇编码逻辑。
+ *
+ */
+static void attach_our_library(void)
+{
 	output_library_func("setl", "SQAless");
 	output_library_func("setg", "SQAlarger");
 	output_library_func("sete", "SQAequal");
 
-  /*
-
-int SQAStore(char *base, int offset, int val){
-    *((int *) (base + offset)) = val;
-    return val;
-}
-
-SQAstore:
-        movl    12(%esp), %eax
-        movl    4(%esp), %ecx
-        movl    8(%esp), %edx
-        movl    %eax, (%ecx,%edx)
-        ret
-  */	
+	//	生成SQAstore汇编码:
 	EmitLabel("\n.text");
 	EmitLabel(".globl  %s", "SQAstore");
 	EmitLabel("%s:", "SQAstore");
@@ -105,51 +75,36 @@ SQAstore:
 	EmitAssembly("movl 4(%%esp), %%ecx");
 	EmitAssembly("movl 8(%%esp), %%edx");
 	EmitAssembly("movl %%eax, (%%ecx,%%edx)");
-	EmitAssembly("ret"); 
+	EmitAssembly("ret");
 
-/*
-int SQAload(char *base, int offset){
-    return *((int *) (base + offset));
-}
-
-SQAload:
-        movl    4(%esp), %edx
-        movl    8(%esp), %eax
-        movl    (%edx,%eax), %eax
-        ret
-*/
+	// 生成SQAload汇编码:
 	EmitLabel("\n.text");
 	EmitLabel(".globl  %s", "SQAload");
 	EmitLabel("%s:", "SQAload");
 	EmitAssembly("movl 4(%%esp), %%edx");
 	EmitAssembly("movl 8(%%esp), %%eax");
 	EmitAssembly("movl (%%edx,%%eax), %%eax");
-	EmitAssembly("ret"); 
-	
+	EmitAssembly("ret");
 }
 
-int main(){
+int main()
+{
 	AstStmtNodePtr declarations = NULL;
 	AstFuncDefNodePtr functions = NULL;
-	
+
 	InitLexer(NextCharFromStdin);
 	NEXT_TOKEN;
-	declarations = Declarations();	
+	declarations = Declarations();
 	functions = FunctionDefinitions();
 	Expect(TK_EOF);
 
-
-	/*******************************************************
-	.data
-	.input_fmtstr:	.string	"%d"
-	.output_fmtstr:	.string	"%d\012"
-	********************************************************/
+	// 生成翻译汇编文件的首四行
 	EmitLabel("#Auto-Genereated by SE352");
 	EmitLabel(".data");
-	EmitAssembly("%s:	.string	\"%%d\"",INPUT_FORMAT_STR_NAME);
-	EmitAssembly("%s:	.string	\"%%d\\012\"",OUTPUT_FORMAT_STR_NAME);
+	EmitAssembly("%s:	.string	\"%%d\"", INPUT_FORMAT_STR_NAME);
+	EmitAssembly("%s:	.string	\"%%d\\012\"", OUTPUT_FORMAT_STR_NAME);
 	EmitStatementNode(declarations);
-	/*********************************	
+	/*********************************
 	.text
 	.globl	main
 	main:
@@ -161,5 +116,3 @@ int main(){
 	// Let the OS do it for us :)
 	return 0;
 }
-
-

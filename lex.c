@@ -71,7 +71,7 @@ const char * GetTokenName(TokenKind tk){
 }
 
 /**
- * @brief 解析当前的字符，将当前字符对应的词法单元中的变量设置好后返回。
+ * @brief 解析（读取整截）当前的字符，将当前字符对应的词法单元中的变量设置好后返回。
  * 
  * @return Token 返回词法单元
  */
