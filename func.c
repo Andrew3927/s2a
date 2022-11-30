@@ -63,7 +63,11 @@ static AstFuncDefNodePtr OneFunctionDef(void){
     return func;
 }
 
-// ID(id, id, id, ..., id) {  }
+/**
+ * @brief 函数定义
+ * 
+ * @return AstFuncDefNodePtr 抽象语法树函数定义节点
+ */
 AstFuncDefNodePtr FunctionDefinitions(void){
 	AstFuncDefNodePtr first = NULL, cur = NULL, pre = NULL;
 	AstStmtNodePtr * funcBody;
@@ -92,6 +96,11 @@ void SetCurFuncDef(AstFuncDefNodePtr func){
     curFuncDef = func;
 }
 
+/**
+ * @brief 生成函数调用的节点。具体生成Assembly里面的函数的汇编码。
+ * 
+ * @param func 
+ */
 void EmitFuncDefNode(AstFuncDefNodePtr func){
     while(func){
         SetCurFuncDef(func);

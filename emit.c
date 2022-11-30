@@ -5,7 +5,7 @@
 #include "emit.h"
 
 
-void EmitPrologue(int stksize){
+void EmitPrologue(int frameSize){
 	/************************
 	pushl %ebp
 	pushl %ebx
@@ -20,8 +20,8 @@ void EmitPrologue(int stksize){
 	// EmitAssembly("pushl %%esi");
 	// EmitAssembly("pushl %%edi");
 	EmitAssembly("movl %%esp, %%ebp");
-	if (stksize != 0){
-		EmitAssembly("subl $%d, %%esp",stksize);
+	if (frameSize != 0){
+		EmitAssembly("subl $%d, %%esp",frameSize);
 	}
 }
 

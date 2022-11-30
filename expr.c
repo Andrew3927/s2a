@@ -50,7 +50,6 @@ int GetFrameSize(void)
 void ResetFrameSize(void)
 {
 	offset = 0;
-	add
 }
 
 static int NewTemp(void)

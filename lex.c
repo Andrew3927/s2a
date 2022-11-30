@@ -48,7 +48,7 @@ static int IsWhiteSpace(char ch){
 	return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
 }
 static char defaultNextChar(void){
-	return EOF_CH;0
+	return EOF_CH;
 }
 
 /**
