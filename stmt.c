@@ -320,8 +320,11 @@ AstStmtNodePtr Statement(void)
 
 /**
  * @brief 生成Statement节点。
- * 
- * @param stmt stmt->op: TK_IF/TK_WHILE/TK_COMPOUND/TK_DECLS/TK_ASSIGN/TK_INPUT/TK_OUTPUT/TK_CALL/TK_RETURN
+ * 	stmt->op: TK_IF/TK_WHILE/TK_COMPOUND/TK_DECLS/TK_ASSIGN/
+ * 	TK_INPUT/TK_OUTPUT/TK_CALL/TK_RETURN
+ *
+ * @param TK_DECLS 调用EmitDeclarationNode
+ *
  */
 void EmitStatementNode(AstStmtNodePtr stmt)
 {

@@ -129,7 +129,7 @@ TryAgain:
 /**
  * @brief 初始化词法分析器
  * 
- * @param next typedef char (*NEXT_CHAR_FUNC)(void);
+ * @param next 被翻译代码的一个字符。
  */
 void InitLexer(NEXT_CHAR_FUNC next){
 	if(next){

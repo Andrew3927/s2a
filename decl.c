@@ -20,14 +20,16 @@ static AstNodePtr Declarator(void);
 ////////////////////////////////////////////////////////////////
 /********************************************************
    direct-declarator:
- 		ID
- 		( declarator )
+		ID
+		( declarator )
  ********************************************************/
-static AstNodePtr DirectDeclarator(void){
+static AstNodePtr DirectDeclarator(void)
+{
 	AstNodePtr directDecl = NULL;
-	if(curToken.kind == TK_ID){
-		directDecl = CreateAstNode(TK_ID,&curToken.value,NULL,NULL);
-		NEXT_TOKEN;		
+	if (curToken.kind == TK_ID)
+	{
+		directDecl = CreateAstNode(TK_ID, &curToken.value, NULL, NULL);
+		NEXT_TOKEN;
 	}
 #if 0	
 	else if(curToken.kind == TK_LPAREN){
@@ -35,19 +37,21 @@ static AstNodePtr DirectDeclarator(void){
 		directDecl = Declarator();
 		Expect(TK_RPAREN);
 	}
-#endif	
-	else{
+#endif
+	else
+	{
 		Error("decl: id or '(' expected.  Found in  %s  line %d\n", __FILE__, __LINE__);
 	}
 	return directDecl;
 }
 /*******************************************************
    postfix-declarator:
- 		direct-declarator
- 		postfix-declarator [num]
- 		postfix-declarator (void)
+		direct-declarator
+		postfix-declarator [num]
+		postfix-declarator (void)
  *******************************************************/
-static AstNodePtr PostfixDeclarator(void){
+static AstNodePtr PostfixDeclarator(void)
+{
 	AstNodePtr decl = DirectDeclarator();
 #if 0	
 	while(1){
@@ -79,15 +83,16 @@ static AstNodePtr PostfixDeclarator(void){
 			break;
 		}
 	}
-#endif	
+#endif
 	return decl;
 }
 /**************************************************
-   	declarator:
- 				* declarator
- 				postfix-declarator
+	declarator:
+				* declarator
+				postfix-declarator
  **************************************************/
-static AstNodePtr Declarator(void){
+static AstNodePtr Declarator(void)
+{
 #if 0	
 	if(curToken.kind == TK_MUL){
 		AstNodePtr pointerDec;
@@ -96,22 +101,26 @@ static AstNodePtr Declarator(void){
 		pointerDec->kids[1] = Declarator();
 		return pointerDec;
 	}
-#endif	
+#endif
 	return PostfixDeclarator();
 }
 
-AstNodePtr Declaration(void){
+AstNodePtr Declaration(void)
+{
 	AstNodePtr dec = NULL;
-	if(curToken.kind == TK_INT){
-		dec = CreateAstNode(TK_INT,&curToken.value,NULL,NULL);
+	if (curToken.kind == TK_INT)
+	{
+		dec = CreateAstNode(TK_INT, &curToken.value, NULL, NULL);
 		NEXT_TOKEN;
 		dec->kids[1] = Declarator();
-	}else{
+	}
+	else
+	{
 		Expect(TK_INT);
 	}
 	return dec;
 }
-// 
+//
 
 #if 0
 void VisitDeclarationNode(AstNodePtr pNode){
@@ -150,13 +159,28 @@ void VisitDeclarationNode(AstNodePtr pNode){
 }
 #endif
 
-void EmitDeclarationNode(AstNodePtr pNode){
-	if(pNode){
+/**
+ * @brief 代翻译代码 全局变量 转成汇编码
+ * 
+ * @param pNode 
+ */
+void EmitDeclarationNode(AstNodePtr pNode)
+{
+	// stmt.c: void EmitStatementNode(AstStmtNodePtr stmt)
+	//
+	// case TK_DECLS:
+	// 		while (stmt->next)
+	// 		{
+	// 			EmitDeclarationNode(stmt->next->expr);
+	// 			stmt = stmt->next;
+	// 		}
+	// 		break;
+	if (pNode)
+	{
 		EmitDeclarationNode(pNode->kids[1]);
-		if(pNode->op == TK_ID){
-			EmitAssembly(".comm	%s,4",GetAccessName(pNode));
+		if (pNode->op == TK_ID)
+		{
+			EmitAssembly(".comm	%s,4", GetAccessName(pNode));
 		}
 	}
 }
-
-

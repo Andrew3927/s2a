@@ -22,9 +22,9 @@ static char NextCharFromMem(void)
 }
 
 /**
- * @brief 读取标准IO输入的下一个字符
+ * @brief 被翻译代码在标准输入当中，此函数每次读取被翻译代码当中的一个字符
  *
- * @return char 返回下一个IO流里面的字符
+ * @return char 代码当中的一个字符。
  */
 static char NextCharFromStdin(void)
 {
@@ -92,7 +92,10 @@ int main()
 	AstStmtNodePtr declarations = NULL;
 	AstFuncDefNodePtr functions = NULL;
 
+	// NextharFromStdin 读取放在标准输入里面的被翻译代码的一个字符，然后
+	// 传给 Initexer：将lex.c的NextChar设置位当前字符。
 	InitLexer(NextCharFromStdin);
+	
 	NEXT_TOKEN;
 	declarations = Declarations();
 	functions = FunctionDefinitions();

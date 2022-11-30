@@ -58,7 +58,7 @@ typedef struct
  */
 typedef char (*NEXT_CHAR_FUNC)(void);
 
-#define EOF_CH ((char)0xFF)
+#define EOF_CH ((char)0xFF) // 0xff = 1111 1111
 
 extern Token curToken;
 
