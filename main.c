@@ -87,6 +87,11 @@ static void attach_our_library(void)
 	EmitAssembly("ret");
 }
 
+/**
+ * @brief Declarations()执行词法分词, FunctionDefinitions()执行语法分析。语法词法分析结束之后，
+ * 
+ * @return int 
+ */
 int main()
 {
 	AstStmtNodePtr declarations = NULL;
@@ -98,24 +103,33 @@ int main()
 
 	// 读入并且分以一个词法单元，设置该词法单元的类型。设置给lex.h: curToken。
 	NEXT_TOKEN;
-	
+
+	// 词法 & 语法 分析 在这两句完成
 	declarations = Declarations();
 	functions = FunctionDefinitions();
-	Expect(TK_EOF);
+
+	Expect(TK_EOF); // 类C代码文末结束符
 
 	// 生成翻译汇编文件的首四行
 	EmitLabel("#Auto-Genereated by SE352");
 	EmitLabel(".data");
 	EmitAssembly("%s:	.string	\"%%d\"", INPUT_FORMAT_STR_NAME);
 	EmitAssembly("%s:	.string	\"%%d\\012\"", OUTPUT_FORMAT_STR_NAME);
+	
+	// 生成类C代码所有全局变量对应的汇编码
 	EmitStatementNode(declarations);
 	/*********************************
 	.text
 	.globl	main
 	main:
 	**********************************/
+	
+	// 生成我们的库函数汇编码。由于我们没有 < > = <= >=，因此自定义库函数
 	attach_our_library();
+
+	// 生成类C代码所有函数定义对应的汇编代码
 	EmitFuncDefNode(functions);
+
 	// FIXME: TBD, free the heap memory.
 	// To be simple, we only use malloc(), but never free() in this simple compiler.
 	// Let the OS do it for us :)

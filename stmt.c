@@ -81,7 +81,11 @@ static AstStmtNodePtr DeclStatement(void)
 	}
 }
 
-// for global variables
+/**
+ * @brief 处理类C代码对所有全局变量的声明
+ * 
+ * @return AstStmtNodePtr 抽象语法树全局变量对应的节点
+ */
 AstStmtNodePtr Declarations(void)
 {
 	AstStmtNodePtr decls;

@@ -64,7 +64,7 @@ static AstFuncDefNodePtr OneFunctionDef(void){
 }
 
 /**
- * @brief 函数定义
+ * @brief 处理类C代码当中所有的函数定义词法 & 语法 分析
  * 
  * @return AstFuncDefNodePtr 抽象语法树函数定义节点
  */

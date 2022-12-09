@@ -73,10 +73,7 @@ const char * GetTokenName(TokenKind tk){
 }
 
 /**
- * @brief 这个curChar类型进行判断，是keywork (int, double, ..., do, while ...)
- * 	还是数字
- * 	还是 + , -, ; ), (, ...
- * 	根据类型进行词法分析（将整个词条读入）。
+ * @brief 判断当前的Char是 空格/字母&数字（变量名）/纯数字/符号
  * 
  * 	NextChar()对应在main.c中的 
  * 	NextCharFromStdin：每次读入一个被翻译代码中的字符。

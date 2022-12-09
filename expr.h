@@ -33,7 +33,10 @@ typedef struct astNode{
 
 
 
-
+/**
+ * @brief 类C代码文件结束符
+ * 
+ */
 #define		Expect(tk)		DoExpect(__LINE__,__FILE__,tk)
 //void Expect(TokenKind tk);
 void DoExpect(int line, char * fileName, TokenKind  tk);
