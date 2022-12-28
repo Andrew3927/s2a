@@ -88,8 +88,8 @@ static AstStmtNodePtr DeclStatement(void)
  */
 AstStmtNodePtr Declarations(void)
 {
-	AstStmtNodePtr decls;
-	AstStmtNodePtr *pStmt;
+	AstStmtNodePtr decls; // declarations
+	AstStmtNodePtr *pStmt; // 指向Statement的Pointer
 	Value value;
 
 	decls = CreateStmtNode(TK_DECLS);

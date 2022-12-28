@@ -53,8 +53,8 @@ typedef struct
 } Token;
 
 /**
- * @brief 个人感觉这种像是java里面的interface的写法
- *
+ * @brief NEXT_CHAR_FUNC type 拿到函数的地址
+ * 
  */
 typedef char (*NEXT_CHAR_FUNC)(void);
 

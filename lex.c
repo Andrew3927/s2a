@@ -73,27 +73,36 @@ const char * GetTokenName(TokenKind tk){
 }
 
 /**
- * @brief 判断当前的Char是 空格/字母&数字（变量名）/纯数字/符号
+ * @brief 一次读入一个词法单元。判断当前的Char是 空格/字母&数字（变量名）/纯数字/符号
  * 
  * 	NextChar()对应在main.c中的 
  * 	NextCharFromStdin：每次读入一个被翻译代码中的字符。
  * 
- * @return Token 返回词法单元
+ * @return Token 返回的词法单元
  */
 Token GetToken(void){
 	Token token;
 	int len = 0;
 	memset(&token,0,sizeof(token));
-	// skip white space
-	while(IsWhiteSpace(curChar)){
+	/**
+	 * @brief 跳过类C代码里面的空格
+	 */
+	while(IsWhiteSpace(curChar)){ 
 		curChar = NextChar();
 	}
 TryAgain:
-	if(curChar == EOF_CH){
+	/**
+	 * @brief 根据每个词法单元首个字符，根据情况
+	 * 	对词法单元整个进行读入，然后设置该词法单元的类型。 
+	 */
+	if(curChar == EOF_CH){ // 0xff = 1111 1111 = 256
 		token.kind = TK_EOF;
-	}else if(isalpha(curChar)){//当前的词法单元是id(变量名) 或者 是 语言的 keyword
-		// 读取完当前词法单元的 名字（直到下一个字符）不为：
-		// 字母（a-z和A-Z）或数字（0-9）停止。
+	}else if(isalpha(curChar)){
+		/**
+		 * @brief 当前的词法单元是id(变量名) 或者 是 语言的 keyword
+		 * 	读取完当前词法单元的 名字（直到下一个字符）不为：
+		 * 	字母（a-z和A-Z）或数字（0-9）停止。
+		 */
 		len = 0;
 		do{			
 			token.value.name[len] = curChar;
@@ -102,24 +111,26 @@ TryAgain:
 		}while(isalnum(curChar) && len < MAX_ID_LEN);
 		token.kind = GetKeywordKind(token.value.name);
 	}else if(isdigit(curChar)){//number
-		// 不断通过Nexthar()从左到右读如数字，直到
-		// 下一个 字符 不是数字为止。
+		/**
+		 * @brief 不断通过Nexthar()从左到右读如数字，直到
+		 * 	下一个 字符 不是数字为止。
+		 */
 		int numVal = 0;
 		token.kind = TK_NUM;
 		do{
 			numVal = numVal*10 + (curChar-'0');
 			curChar = NextChar();
 		}while(isdigit(curChar));
-		// 将数字赋到 词法单元的信息
-		token.value.numVal = numVal;
+		token.value.numVal = numVal; // 将数字赋到 词法单元的信息
 	}else{
-		// 当前的字符是tokens.txt当中的类型
-		// 找到当前字符对应的词法单元类型，然后设置给当前的词法单元类型。
+		/**
+		 * @brief 当前的字符是tokens.txt当中的类型
+		 * 	找到当前字符对应的词法单元类型，然后设置给当前的词法单元类型。
+		 * 
+		 */
 		token.kind = GetTokenKindOfChar(curChar);
-		if(token.kind != TK_NA){// '+','-','*','/',...
-			// 将词法单元类型对应的值副给名字。
-			token.value.name[0] = curChar;
-
+		if(token.kind != TK_NA){ // '+','-','*','/',...
+			token.value.name[0] = curChar; // 将词法单元类型对应的值副给名字。
 			curChar = NextChar();
 		}else{
 			Error("illegal char \'%x\' .  Found in  %s  line %d \n",curChar, __FILE__,__LINE__);

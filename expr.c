@@ -335,6 +335,11 @@ static int GetLocalVarOrParameterOffset(char *id)
 	return offset;
 }
 
+/**
+ * @brief 根据抽象语法树节点的类型/op对应的TOKEN，将该类型对应在汇编语言的那一部分的处理format成字符串，然后返回此字符串的指针。
+ * 
+ * @param presentNode 当前抽象语法树的节点 (pNode)
+ */
 char *GetAccessName(AstNodePtr presentNode)
 {
 	if (presentNode)
@@ -368,7 +373,7 @@ char *GetAccessName(AstNodePtr presentNode)
 }
 
 /**
- * @brief 翻译expr，结果保留在t
+ * @brief 翻译expr （expression)，结果保留在t
  *
  * @param pNode
  */
@@ -396,6 +401,11 @@ void EmitArithmeticNode(AstNodePtr pNode)
 		// // move the return address to a temporary variable
 		// EmitAssembly(???,GetAccessName(pNode));
 
+		/**
+		 * 此处为函数调用处理的代码。由课件函数调用处理的内容step-by-step完成代码修改。
+		 * 
+		 */
+
 		int cnt = 0;
 		// evaluate argugments from left to right
 		while (cnt < pNode->arg_cnt)
@@ -421,6 +431,10 @@ void EmitArithmeticNode(AstNodePtr pNode)
 	}
 	else if (pNode && IsArithmeticNode(pNode))
 	{
+		/**
+		 * 此处完成当前节点为（普通运算：加/减/乘/除）算法节点时汇编码的生成的任务。
+		 * 
+		 */
 		EmitArithmeticNode(pNode->kids[0]);
 		EmitArithmeticNode(pNode->kids[1]);
 		if (pNode->kids[0] && pNode->kids[1])

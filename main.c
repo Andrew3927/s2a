@@ -28,12 +28,12 @@ static char NextCharFromMem(void)
  */
 static char NextCharFromStdin(void)
 {
-	int ch = fgetc(stdin);
-	if (ch == EOF)
+	int ch = fgetc(stdin); // 从标准输入当中读取一个字符
+	if (ch == EOF) // EOF 是 -1
 	{
 		return (char)EOF_CH;
 	}
-	else
+	else // 将读入的字符返回。
 	{
 		return (char)ch;
 	}
@@ -67,7 +67,10 @@ static void attach_our_library(void)
 	output_library_func("setg", "SQAlarger");
 	output_library_func("sete", "SQAequal");
 
-	//	生成SQAstore汇编码:
+	/**
+	 * @brief 生成SQAstore汇编码:
+	 * 
+	 */
 	EmitLabel("\n.text");
 	EmitLabel(".globl  %s", "SQAstore");
 	EmitLabel("%s:", "SQAstore");
@@ -77,7 +80,10 @@ static void attach_our_library(void)
 	EmitAssembly("movl %%eax, (%%ecx,%%edx)");
 	EmitAssembly("ret");
 
-	// 生成SQAload汇编码:
+	/**
+	 * @brief 生成SQAload汇编码:
+	 * 
+	 */
 	EmitLabel("\n.text");
 	EmitLabel(".globl  %s", "SQAload");
 	EmitLabel("%s:", "SQAload");
@@ -89,22 +95,22 @@ static void attach_our_library(void)
 
 /**
  * @brief Declarations()执行词法分词, FunctionDefinitions()执行语法分析。语法词法分析结束之后，
- * 
- * @return int 
  */
 int main()
 {
-	AstStmtNodePtr declarations = NULL;
-	AstFuncDefNodePtr functions = NULL;
+	AstStmtNodePtr declarations = NULL;  	// 抽象语法树变量声明节点
+	AstFuncDefNodePtr functions = NULL;		// 抽象语法树函数声明节点
 
-	// NextharFromStdin: 读取放在标准输入里面的被翻译代码的一个字符，然后
-	// 传给 Initexer：将lex.c的NextChar设置位当前字符。
+	/**
+	 * @brief NextCharFromStdin(): 读取放在标准输入里面的被翻译代码的一个字符，然后
+	 * 	传给 Initexer：将lex.c的NextChar设置位当前字符。
+	 */
 	InitLexer(NextCharFromStdin);
 
 	// 读入并且分以一个词法单元，设置该词法单元的类型。设置给lex.h: curToken。
 	NEXT_TOKEN;
 
-	// 词法 & 语法 分析 在这两句完成
+	// 声明词法分析 & 函数定义语法分析 
 	declarations = Declarations();
 	functions = FunctionDefinitions();
 
