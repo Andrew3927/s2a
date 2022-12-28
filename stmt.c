@@ -82,7 +82,7 @@ static AstStmtNodePtr DeclStatement(void)
 }
 
 /**
- * @brief 处理类C代码对所有全局变量的声明
+ * @brief 变量声明的词法分析，分析完成后返回节点。
  * 
  * @return AstStmtNodePtr 抽象语法树全局变量对应的节点
  */

@@ -110,7 +110,7 @@ int main()
 	// 读入并且分以一个词法单元，设置该词法单元的类型。设置给lex.h: curToken。
 	NEXT_TOKEN;
 
-	// 声明词法分析 & 函数定义语法分析 
+	// 变量声明的词法分析 & 函数定义的语法分析 
 	declarations = Declarations();
 	functions = FunctionDefinitions();
 
@@ -122,7 +122,7 @@ int main()
 	EmitAssembly("%s:	.string	\"%%d\"", INPUT_FORMAT_STR_NAME);
 	EmitAssembly("%s:	.string	\"%%d\\012\"", OUTPUT_FORMAT_STR_NAME);
 	
-	// 生成类C代码所有全局变量对应的汇编码
+	// 生成类C代码所有变量声明对应的汇编码
 	EmitStatementNode(declarations);
 	/*********************************
 	.text
@@ -130,7 +130,7 @@ int main()
 	main:
 	**********************************/
 	
-	// 生成我们的库函数汇编码。由于我们没有 < > = <= >=，因此自定义库函数
+	// 生成自定义库函数的汇编码。由于我们没有 < > = <= >=，因此自定义库函数
 	attach_our_library();
 
 	// 生成类C代码所有函数定义对应的汇编代码
